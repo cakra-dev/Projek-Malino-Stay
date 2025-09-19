@@ -36,6 +36,7 @@ app.post("/register", (req, res) => {
   });
 });
 
+
 // ✅ Login
 app.post("/login", (req, res) => {
   const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
