@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/register.css">
+    <title>Register Page</title>
+</head>
+
+<body>
+    <section>
+    <div class="login-box">
+        <form action="register.php" method="post">
+            <img src="image/logo.png" alt="">
+            <h2>Daftar Akun</h2>
+            <h2 class="font">Malino Stay</h2>
+            <div class="input-box">
+                <span class="icon">
+                    <ion-icon name="person"></ion-icon>
+                </span>
+                <input type="text" name="nama" required/>
+                <label>Nama</label>
+            </div>
+            <div class="input-box">
+                <span class="icon">
+                    <ion-icon name="mail"></ion-icon>
+                </span>
+                <input type="email" name="email" required/>
+                <label>Email</label>
+            </div>
+            <div class="input-box">
+                <span class="icon">
+                    <ion-icon name="lock-closed"></ion-icon>
+                </span>
+                <input type="password" name="password" required/>
+                <label>Password</label>
+            </div>
+            <button type="submit" name="register" class="btn">Daftar</button>
+            <div class="register-link">
+                <p>Sudah Punya Akun? <a href="login.html" class="register-link">Masuk</p>
+            </div>
+        </form>
+    </div>
+    </section>
+    <!-- Ionicons CDN -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
