@@ -53,28 +53,54 @@ def recommend(penginapan_id):
     except IndexError:
         return jsonify([])
 
-    # Hitung cosine similarity
+    # Hitung cosine similarity (konten)
     cosine_sim = cosine_similarity(tfidf_matrix[idx], tfidf_matrix).flatten()
 
-    # Urutkan rekomendasi (skip index sendiri)
-    sim_scores = list(enumerate(cosine_sim))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    sim_scores = [s for s in sim_scores if s[0] != idx]  # buang yang sama
+    # ✅ Tambahkan faktor harga
+    target_price = df.loc[idx, "harga"]
+    max_price = df["harga"].max()
+    min_price = df["harga"].min()
 
-    # Ambil top 5 dengan similarity
-    top_scores = sim_scores[:10]  # [(index, similarity), ...]
+    if max_price == min_price:
+        df["price_score"] = 1.0  # kalau semua harga sama
+    else:
+        df["price_score"] = 1 - (abs(df["harga"] - target_price) / (max_price - min_price))
+
+    # ✅ Gabungkan skor similarity konten + harga
+    alpha = 0.7  # bobot konten
+    beta = 0.3   # bobot harga
+    final_scores = (alpha * cosine_sim) + (beta * df["price_score"])
+
+    # Urutkan berdasarkan skor gabungan (skip item sendiri)
+    sim_scores = list(enumerate(final_scores))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores = [s for s in sim_scores if s[0] != idx]
+
+    # Ambil top 10 rekomendasi
+    top_scores = sim_scores[:10]
     recommendations = []
 
     for idx_sim, sim in top_scores:
         r = df.iloc[idx_sim].to_dict()
-        r["similarity"] = float(sim)  # ✅ tambahkan similarity
+
+        # ✅ pastikan semua skor muncul di JSON
+        r["final_score"] = round(float(sim), 4)  
+        r["content_similarity"] = round(float(cosine_sim[idx_sim]), 4)
+        r["price_score"] = round(float(df.iloc[idx_sim]["price_score"]), 4)
+
+        # Encode gambar ke base64 kalau ada
         if isinstance(r.get("image"), (bytes, bytearray)):
             r["image"] = base64.b64encode(r["image"]).decode("utf-8")
         else:
             r["image"] = None
+
         recommendations.append(r)
 
-    return jsonify(recommendations)
+    # ✅ bungkus dengan struktur jelas
+    return jsonify({
+        "target_id": int(penginapan_id),
+        "recommendations": recommendations
+    })
 
 
 if __name__ == "__main__":
