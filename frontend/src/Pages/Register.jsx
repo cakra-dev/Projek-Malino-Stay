@@ -27,7 +27,7 @@ function Register() {
         alert("Registrasi berhasil, silakan login!");
         navigate("/");
       } else {
-        alert("Registrasi gagal!");
+        alert("Registrasi gagal!!");
       }
     } catch (err) {
       console.error(err);

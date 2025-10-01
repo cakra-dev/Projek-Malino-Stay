@@ -20,17 +20,17 @@ function Dashboard() {
   const [totalUser, setTotalUser] = useState(0);
 
   useEffect(() => {
-    // 🔹 Statistik penginapan
+    // Statistik penginapan
     axios.get("http://localhost:3001/penginapan/statistik")
       .then(res => setStatistik(res.data))
       .catch(err => console.error("❌ Error statistik:", err));
 
-    // 🔹 Data per-tipe untuk Pie Chart
+    // Data per-tipe untuk Pie Chart
     axios.get("http://localhost:3001/penginapan/per-tipe")
       .then(res => setPerTipe(res.data))
       .catch(err => console.error("❌ Error per-tipe:", err));
 
-    // 🔹 Statistik user
+    // Statistik user
     axios.get("http://localhost:3001/users/statistik")
       .then(res => setTotalUser(res.data.total_user))
       .catch(err => console.error("❌ Error users:", err));
