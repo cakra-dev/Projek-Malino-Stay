@@ -62,7 +62,7 @@ def recommend(penginapan_id):
     min_price = df["harga"].min()
 
     if max_price == min_price:
-        df["price_score"] = 1.0  # kalau semua harga sama
+        df["price_score"] = 1.0  
     else:
         df["price_score"] = 1 - (abs(df["harga"] - target_price) / (max_price - min_price))
 
