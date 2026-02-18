@@ -9,35 +9,39 @@ function RekomendasiPenginapan({ penginapanId }) {
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
 
-  useEffect(() => {
-    const fetchRekomendasi = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:5000/recommendations/${penginapanId}`
-        );
+useEffect(() => {
+  if (!penginapanId || isNaN(Number(penginapanId))) return;
 
-        // backend return: { target_id, recommendations: [...] }
-        const data = res.data.recommendations || res.data;
+  const fetchRekomendasi = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/recommendations/${Number(penginapanId)}`
+      );
 
-        // tandai semua belum favorit default
-        const mapped = data.map((p) => ({ ...p, isFavorite: false }));
-        setRekomendasi(mapped);
-      } catch (err) {
-        console.error("Gagal fetch rekomendasi:", err);
-      }
-    };
+      // 🔒 Ambil hanya array recommendations
+      const recommendations = Array.isArray(res.data?.recommendations)
+        ? res.data.recommendations
+        : [];
 
-    if (penginapanId) {
-      fetchRekomendasi();
+      // mapping aman
+      const mapped = recommendations.map((p) => ({
+        ...p,
+        isFavorite: false,
+      }));
+
+      setRekomendasi(mapped);
+    } catch (err) {
+      console.error("Gagal fetch rekomendasi:", err);
+      setRekomendasi([]);
     }
-  }, [penginapanId]);
+  };
+
+  fetchRekomendasi();
+}, [penginapanId]);
+
 
   // 🔹 Handle klik favorite
   const handleFavorite = async (hotel) => {
-    if (!userId) {
-      alert("Silakan login untuk menambahkan favorit.");
-      return;
-    }
 
     try {
       if (hotel.isFavorite) {
@@ -94,7 +98,6 @@ function RekomendasiPenginapan({ penginapanId }) {
                 name={item.nama_penginapan}
                 rating={item.rating || 0}
                 price={item.harga || 0}
-                // ✅ tampilkan skor gabungan dari backend
                 similarity={item.final_score} 
                 isFavorite={item.isFavorite}
                 onFavorite={() => handleFavorite(item)}

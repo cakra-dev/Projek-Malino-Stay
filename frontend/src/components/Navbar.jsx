@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo1.png";
 
-
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -14,13 +13,11 @@ export default function Navbar() {
 
   const handleCloseMenu = () => setOpen(false);
 
-  // Style inline untuk nav-link
   const navLinkStyle = ({ isActive }) => ({
     fontFamily: "'Poppins', sans-serif",
     fontWeight: 500,
     position: "relative",
     color: isActive ? "#000000ff" : "#000",
-    textDecoration: "none",
     paddingBottom: "4px",
     transition: "color 0.3s ease",
     borderBottom: isActive ? "2px solid #000000ff" : "2px solid transparent",
@@ -32,7 +29,6 @@ export default function Navbar() {
       style={{ fontFamily: "'Poppins', sans-serif" }}
     >
       <div className="container">
-        {/* Logo */}
         <NavLink
           to="/home"
           className="navbar-brand d-flex align-items-center fw-bold text-success"
@@ -46,7 +42,6 @@ export default function Navbar() {
           Malino Stay
         </NavLink>
 
-        {/* Hamburger */}
         <button
           className="navbar-toggler"
           type="button"

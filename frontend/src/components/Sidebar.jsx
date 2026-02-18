@@ -7,7 +7,6 @@ import { NavLink } from "react-router-dom";
 function Sidebar() {
   const location = useLocation();
 
-  // Fungsi untuk cek active link
   const isActive = (path) => location.pathname === path ? "active" : "";
 
   return (

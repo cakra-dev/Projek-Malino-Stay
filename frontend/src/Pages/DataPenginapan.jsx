@@ -29,9 +29,11 @@ function DataPenginapan() {
     if (window.confirm("Yakin mau hapus data ini?")) {
       try {
         await axios.delete(`http://localhost:3001/penginapan/${id}`);
+        alert("Data berhasil dihapus!");
         fetchData();
       } catch (err) {
-        console.error("Gagal hapus data:", err);
+        console.error("Gagal hapus data!", err);
+        alert("Gagal menghapus data!");
       }
     }
   };
@@ -52,7 +54,7 @@ function DataPenginapan() {
         <div className="flex-grow-1 d-flex flex-column min-vh-100">
           <Header onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-          <div className="container mt-4 flex-grow-1 px-4">
+          <div className="p-5">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h2>Data Penginapan</h2>
               <button
@@ -71,11 +73,16 @@ function DataPenginapan() {
                   <th>Nama</th>
                   <th>Tipe</th>
                   <th>Rating</th>
-                  <th>Review</th>
                   <th>Harga</th>
                   <th>Fasilitas</th>
                   <th>Lokasi</th>
+                  <th>noTelp</th>
                   <th>Deskripsi</th>
+                  <th>area_HPM</th>
+                  <th>area_KEM</th>
+                  <th>area_ATT</th>
+                  <th>area_WM</th>
+                  <th>area_MH</th>
                   <th>Gambar</th>
                   <th>Aksi</th>
                 </tr>
@@ -87,12 +94,16 @@ function DataPenginapan() {
                     <td>{item.nama_penginapan}</td>
                     <td>{item.tipe_penginapan}</td>
                     <td>{item.rating}</td>
-                    <td>{item.jumlah_review}</td>
                     <td>Rp {item.harga.toLocaleString("id-ID")}</td>
                     <td>{item.fasilitas}</td>
-                    {/* Lokasi & Deskripsi dipotong */}
-                    <td title={item.lokasi}>{truncateText(item.lokasi, 30)}</td>
+                    <td title={item.lokasi}>{truncateText(item.lokasi, 20)}</td>
+                    <td>{item.noTelp}</td>
                     <td title={item.deskripsi}>{truncateText(item.deskripsi, 50)}</td>
+                    <td>{item.area_HPM}</td>
+                    <td>{item.area_KEM}</td>
+                    <td>{item.area_ATT}</td>
+                    <td>{item.area_WM}</td>
+                    <td>{item.area_MH}</td>
                     <td>
                       {item.image ? (
                         <img

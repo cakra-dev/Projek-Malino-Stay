@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 app.use(fileUpload());
 
-// ✅ Koneksi database
+// Koneksi database
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -17,15 +17,16 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-  if (err) console.error("❌ DB Error!:", err);
-  else console.log("✅ MySQL Connected");
+  if (err) console.error("DB Error!:", err);
+  else console.log("MySQL Connected");
 });
 
+
 // ==========================
-// 🔐 AUTH
+//           AUTH
 // ==========================
 
-// ✅ Register
+// Register
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
   const sql =
@@ -36,7 +37,7 @@ app.post("/register", (req, res) => {
   });
 });
 
-// ✅ Login
+// Login
 app.post("/login", (req, res) => {
   const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
   db.query(sql, [req.body.email, req.body.password], (err, data) => {
@@ -56,7 +57,12 @@ app.post("/login", (req, res) => {
   });
 });
 
-// ✅ Statistik user
+
+// ==========================
+//        Statistik
+// ==========================
+
+// Statistik user
 app.get("/users/statistik", (req, res) => {
   const sql = "SELECT COUNT(*) AS total_user FROM users";
   db.query(sql, (err, data) => {
@@ -65,7 +71,7 @@ app.get("/users/statistik", (req, res) => {
   });
 });
 
-// ✅ Get semua user
+// Get semua user
 app.get("/users", (req, res) => {
   const sql = "SELECT id, name, email, role FROM users";
   db.query(sql, (err, data) => {
@@ -74,11 +80,7 @@ app.get("/users", (req, res) => {
   });
 });
 
-// ==========================
-// 📊 Statistik
-// ==========================
-
-// ✅ Jumlah penginapan per tipe (buat chart)
+// Jumlah penginapan per tipe (buat chart)
 app.get("/penginapan/per-tipe", (req, res) => {
   const sql = `
     SELECT tipe_penginapan, COUNT(*) AS total 
@@ -91,7 +93,7 @@ app.get("/penginapan/per-tipe", (req, res) => {
   });
 });
 
-// ✅ Statistik total, rata2 rating, rata2 harga
+// Statistik total, rata2 rating, rata2 harga
 app.get("/penginapan/statistik", (req, res) => {
   const sql = `
     SELECT 
@@ -106,11 +108,12 @@ app.get("/penginapan/statistik", (req, res) => {
   });
 });
 
+
 // ==========================
-// 🏨 CRUD PENGINAPAN
+//     CRUD PENGINAPAN
 // ==========================
 
-// ✅ Get semua penginapan
+// Get semua penginapan
 app.get("/penginapan", (req, res) => {
   const sql = "SELECT * FROM penginapan";
   db.query(sql, (err, data) => {
@@ -125,7 +128,20 @@ app.get("/penginapan", (req, res) => {
   });
 });
 
-// ✅ Get 1 penginapan by ID
+
+// Get data area terdekat (hanya kolom jarak, tanpa image)
+app.get("/penginapan/area-terdekat", (req, res) => {
+  const sql = `
+    SELECT id, nama_penginapan, area_HPM, area_KEM, area_ATT, area_WM, area_MH
+    FROM penginapan
+  `;
+  db.query(sql, (err, data) => {
+    if (err) return res.json({ error: err });
+    return res.json(data);
+  });
+});
+
+// Get 1 penginapan by ID
 app.get("/penginapan/:id", (req, res) => {
   const sql = "SELECT * FROM penginapan WHERE id = ?";
   db.query(sql, [req.params.id], (err, data) => {
@@ -143,15 +159,15 @@ app.get("/penginapan/:id", (req, res) => {
   });
 });
 
-// ✅ Tambah penginapan
+// Tambah penginapan
 app.post("/penginapan", (req, res) => {
-  const { nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, deskripsi } = req.body;
+  const { nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, noTelp, deskripsi } = req.body;
   const image = req.files ? req.files.image : null;
 
   const sql = `
     INSERT INTO penginapan 
-    (nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, deskripsi, image) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, noTelp, deskripsi, image) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
@@ -162,6 +178,7 @@ app.post("/penginapan", (req, res) => {
     harga,
     fasilitas,
     lokasi,
+    noTelp,
     deskripsi,
     image ? image.data : null,
   ];
@@ -172,9 +189,9 @@ app.post("/penginapan", (req, res) => {
   });
 });
 
-// ✅ Update penginapan by ID
+// Update penginapan by ID
 app.put("/penginapan/:id", (req, res) => {
-  const { nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, deskripsi } = req.body;
+  const { nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, noTelp, deskripsi } = req.body;
   const image = req.files ? req.files.image : null;
 
   let sql, values;
@@ -182,15 +199,15 @@ app.put("/penginapan/:id", (req, res) => {
   if (image) {
     sql = `
       UPDATE penginapan 
-      SET nama_penginapan=?, tipe_penginapan=?, rating=?, jumlah_review=?, harga=?, fasilitas=?, lokasi=?, deskripsi=?, image=? 
+      SET nama_penginapan=?, tipe_penginapan=?, rating=?, jumlah_review=?, harga=?, fasilitas=?, lokasi=?, noTelp=?, deskripsi=?, image=? 
       WHERE id=?`;
-    values = [nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, deskripsi, image.data, req.params.id];
+    values = [nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, noTelp, deskripsi, image.data, req.params.id];
   } else {
     sql = `
       UPDATE penginapan 
-      SET nama_penginapan=?, tipe_penginapan=?, rating=?, jumlah_review=?, harga=?, fasilitas=?, lokasi=?, deskripsi=? 
+      SET nama_penginapan=?, tipe_penginapan=?, rating=?, jumlah_review=?, harga=?, fasilitas=?, lokasi=?, noTelp=?, deskripsi=? 
       WHERE id=?`;
-    values = [nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, deskripsi, req.params.id];
+    values = [nama_penginapan, tipe_penginapan, rating, jumlah_review, harga, fasilitas, lokasi, noTelp, deskripsi, req.params.id];
   }
 
   db.query(sql, values, (err, result) => {
@@ -199,7 +216,7 @@ app.put("/penginapan/:id", (req, res) => {
   });
 });
 
-// ✅ Hapus penginapan by ID
+// Hapus penginapan by ID
 app.delete("/penginapan/:id", (req, res) => {
   const sql = "DELETE FROM penginapan WHERE id = ?";
   db.query(sql, [req.params.id], (err, result) => {
@@ -209,12 +226,11 @@ app.delete("/penginapan/:id", (req, res) => {
 });
 
 
-
 // ==========================
-// ❤️ FAVORITES
+//         FAVORITES
 // ==========================
 
-// ✅ Get semua favorit user
+// Get semua favorit user
 app.get("/favorite/:userId", (req, res) => {
   const { userId } = req.params;
   const sql = `
@@ -235,7 +251,7 @@ app.get("/favorite/:userId", (req, res) => {
   });
 });
 
-// ✅ Tambah favorit
+// Tambah favorit
 app.post("/favorite", (req, res) => {
   const { user_id, penginapan_id } = req.body;
 
@@ -255,7 +271,7 @@ app.post("/favorite", (req, res) => {
   });
 });
 
-// ✅ Hapus favorit
+// Hapus favorit
 app.delete("/favorite/:userId/:penginapanId", (req, res) => {
   const { userId, penginapanId } = req.params;
   const sql = "DELETE FROM favorites WHERE user_id = ? AND penginapan_id = ?";
@@ -267,8 +283,8 @@ app.delete("/favorite/:userId/:penginapanId", (req, res) => {
 
 
 // ==========================
-// 🚀 Run Server
+//         Run Server
 // ==========================
 app.listen(3001, () => {
-  console.log("✅ Server running on http://localhost:3001");
+  console.log("Server running on http://localhost:3001");
 });

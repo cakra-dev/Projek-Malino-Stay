@@ -74,7 +74,9 @@ function Register() {
                 onChange={handleInput}
                 className="form-control"
                 placeholder="Masukkan nama"
-                required
+                required   
+                onInvalid={(e) => e.target.setCustomValidity("Nama wajib diisi")}
+                onInput={(e) => e.target.setCustomValidity("")}
               />
             </div>
           </div>
@@ -90,10 +92,11 @@ function Register() {
                 type="email"
                 name="email"
                 onChange={handleInput}
-                required
                 className="form-control"
                 placeholder="Masukkan email"
-
+                required
+                onInvalid={(e) => e.target.setCustomValidity("Email wajib diisi")}
+                onInput={(e) => e.target.setCustomValidity("")}
               />
             </div>
           </div>
@@ -112,6 +115,8 @@ function Register() {
                 className="form-control"
                 placeholder="Masukkan password"
                 required
+                onInvalid={(e) => e.target.setCustomValidity("Password wajib diisi")}
+                onInput={(e) => e.target.setCustomValidity("")}
               />
             </div>
           </div>

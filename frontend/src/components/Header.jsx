@@ -10,12 +10,12 @@ function Header({ user, onToggleSidebar }) {
 
   return (
     <nav className="navbar navbar-dark bg-dark px-3 py-2">
-      <button className="btn btn-dark me-2" onClick={onToggleSidebar}>
+      <button className="btn btn-dark px-3" onClick={onToggleSidebar}>
         <span className="navbar-toggler-icon"></span>
       </button>
 
       <div className="ms-auto d-flex align-items-center p-1">
-        <span className="text-white me-3">
+        <span className="text-white me-2">
           Halo, <b>{user?.name || "Admin"}</b>
         </span>
             <button

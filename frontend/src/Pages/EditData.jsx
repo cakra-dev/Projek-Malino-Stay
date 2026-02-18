@@ -6,17 +6,17 @@ import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
 
 function EditData() {
-  const { id } = useParams(); // ✅ ambil id dari URL
+  const { id } = useParams(); // ambil id dari URL
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     nama_penginapan: "",
     tipe_penginapan: "",
     rating: "",
-    jumlah_review: "",
     harga: "",
     fasilitas: "",
     lokasi: "",
+    noTelp: "",
     deskripsi: "",
   });
 
@@ -35,10 +35,10 @@ function EditData() {
           nama_penginapan: data.nama_penginapan || "",
           tipe_penginapan: data.tipe_penginapan || "",
           rating: data.rating || "",
-          jumlah_review: data.jumlah_review || "",
           harga: data.harga || "",
           fasilitas: data.fasilitas || "",
           lokasi: data.lokasi || "",
+          noTelp: data.noTelp || "",
           deskripsi: data.deskripsi || "",
         });
 
@@ -46,7 +46,7 @@ function EditData() {
           setPreview(`data:image/jpeg;base64,${data.image}`);
         }
       } catch (err) {
-        console.error("❌ Gagal ambil data:", err);
+        console.error("Gagal ambil data!", err);
         alert("Data tidak ditemukan.");
         navigate("/penginapan");
       }
@@ -96,10 +96,10 @@ function EditData() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("✅ Data berhasil diupdate!");
+      alert("Data berhasil diupdate!");
       navigate("/penginapan");
     } catch (err) {
-      console.error("❌ Gagal update data:", err);
+      console.error("Gagal update data!", err);
       alert("Terjadi kesalahan saat update.");
     }
   };
@@ -168,20 +168,6 @@ function EditData() {
                 />
               </div>
 
-              {/* Review */}
-              <div className="mb-3">
-                <label className="form-label">Jumlah Review</label>
-                <input
-                  type="number"
-                  name="jumlah_review"
-                  className="form-control"
-                  value={formData.jumlah_review}
-                  onChange={handleChange}
-                  min="0"
-                  required
-                />
-              </div>
-
               {/* Harga */}
               <div className="mb-3">
                 <label className="form-label">Harga (Rp)</label>
@@ -217,6 +203,19 @@ function EditData() {
                   name="lokasi"
                   className="form-control"
                   value={formData.lokasi}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              {/* noTelp */}
+              <div className="mb-3">
+                <label className="form-label">Nomor Telepon</label>
+                <input
+                  type="number"
+                  name="noTelp"
+                  className="form-control"
+                  value={formData.noTelp}
                   onChange={handleChange}
                   required
                 />
